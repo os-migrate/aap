@@ -1,0 +1,28 @@
+# Use Fedora as the base image
+FROM fedora:latest
+
+# Install necessary dependencies
+RUN dnf install -y python3 python3-pip git gcc python3-devel && \
+    dnf install -y ansible-core --enablerepo=updates-testing && \
+    dnf clean all
+
+# Install ansible collections
+RUN ansible-galaxy collection install community.vmware
+RUN ansible-galaxy collection install openstack.cloud
+RUN ansible-galaxy collection install os_migrate.os_migrate
+RUN ansible-galaxy collection install community.general
+
+# @TBR: VMware collection is not published yet
+# Clone the os-migrate/vmware-migration-kit repository to the correct directory
+RUN mkdir -p /root/.ansible/collections/ansible_collections/os_migrate
+
+RUN git clone https://github.com/os-migrate/vmware-migration-kit /root/vmware-migration-kit && \
+  cp -R /root/vmware-migration-kit/vmware_migration_kit /root/.ansible/collections/ansible_collections/os_migrate/
+
+RUN pip install requests
+RUN pip install pyVim
+RUN pip install pyVmomi
+RUN pip install openstacksdk
+
+RUN mkdir /opt/os-migrate
+CMD ["/bin/bash"]
