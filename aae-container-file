@@ -24,6 +24,7 @@ RUN pip install requests
 RUN pip install pyVim
 RUN pip install pyVmomi
 RUN pip install openstacksdk
+RUN pip install jmespath
 
 RUN mkdir /opt/os-migrate
 CMD ["/bin/bash"]
